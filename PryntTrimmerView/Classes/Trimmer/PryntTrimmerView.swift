@@ -297,10 +297,21 @@ public protocol TrimmerViewDelegate: class {
             let offsetPosition = newPosition - assetPreview.contentOffset.x - leftHandleView.frame.origin.x
             let maxPosition = rightHandleView.frame.origin.x - (leftHandleView.frame.origin.x + handleWidth)
                               - positionBar.frame.width
+            print("max:\(maxPosition)")
             let normalizedPosition = min(max(0, offsetPosition), maxPosition)
             positionConstraint?.constant = normalizedPosition
             layoutIfNeeded()
         }
+    }
+    
+    public var startPercent: CGFloat {
+        let startPosition = leftHandleView.frame.origin.x + assetPreview.contentOffset.x
+        return startPosition / durationSize
+    }
+    
+    public var endPercent: CGFloat {
+        let endPosition = rightHandleView.frame.origin.x + assetPreview.contentOffset.x - handleWidth
+        return endPosition / durationSize
     }
 
     /// The selected start time for the current asset.
