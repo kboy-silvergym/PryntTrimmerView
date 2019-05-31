@@ -31,7 +31,9 @@ class VideoTrimmerViewController: AssetSelectionViewController {
     }
 
     @IBAction func selectAsset(_ sender: Any) {
-        loadAssetRandomly()
+        //loadAssetRandomly()
+        
+        trimmerView.thumbnailImage = #imageLiteral(resourceName: "poker")
     }
 
     @IBAction func play(_ sender: Any) {

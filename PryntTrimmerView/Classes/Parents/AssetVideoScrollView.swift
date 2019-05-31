@@ -50,6 +50,21 @@ class AssetVideoScrollView: UIScrollView {
         super.layoutSubviews()
         contentSize = contentView.bounds.size
     }
+    
+    internal func generateThumbnailFromImage(_ image: UIImage){
+        guard let cgimage = image.cgImage else {
+            return
+        }
+        let visibleThumbnailsCount: Int = 10
+        addThumbnailViews(visibleThumbnailsCount, size: image.size)
+        
+        for i in 0 ..< visibleThumbnailsCount {
+            if i == 0 {
+                self.displayFirstImage(cgimage, visibleThumbnails: visibleThumbnailsCount)
+            }
+            self.displayImage(cgimage, at: i)
+        }
+    }
 
     internal func regenerateThumbnails(for asset: AVAsset) {
         guard let thumbnailSize = getThumbnailFrameSize(from: asset), thumbnailSize.width != 0 else {

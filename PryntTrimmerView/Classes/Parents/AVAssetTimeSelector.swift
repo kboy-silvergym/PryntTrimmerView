@@ -14,6 +14,15 @@ import AVFoundation
 public class AVAssetTimeSelector: UIView, UIScrollViewDelegate {
 
     let assetPreview = AssetVideoScrollView()
+    
+    public var thumbnailImage: UIImage? {
+        didSet {
+            guard let image = thumbnailImage else {
+                return
+            }
+            assetPreview.generateThumbnailFromImage(image)
+        }
+    }
 
     /// The asset to be displayed in the underlying scroll view. Setting a new asset will automatically refresh the thumbnails.
     public var asset: AVAsset? {
