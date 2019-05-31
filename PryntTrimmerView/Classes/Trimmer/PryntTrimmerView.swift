@@ -281,6 +281,14 @@ public protocol TrimmerViewDelegate: class {
     }
 
     // MARK: - Time Equivalence
+    
+    public func seek(to percentage: CGFloat) {
+        let maxPosition = rightHandleView.frame.origin.x - (leftHandleView.frame.origin.x + handleWidth)
+            - positionBar.frame.width
+        let normalizedPosition: CGFloat = maxPosition * percentage
+        positionConstraint?.constant = normalizedPosition
+        layoutIfNeeded()
+    }
 
     /// Move the position bar to the given time.
     public func seek(to time: CMTime) {
