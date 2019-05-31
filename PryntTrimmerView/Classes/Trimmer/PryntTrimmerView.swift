@@ -10,8 +10,8 @@ import AVFoundation
 import UIKit
 
 public protocol TrimmerViewDelegate: class {
-    func didChangePositionBar(_ playerTime: CMTime)
-    func positionBarStoppedMoving(_ playerTime: CMTime)
+    func didChangePositionBar()
+    func positionBarStoppedMoving()
 }
 
 /// A view to select a specific time range of a video. It consists of an asset preview with thumbnails inside a scroll view, two
@@ -327,13 +327,10 @@ public protocol TrimmerViewDelegate: class {
     }
 
     private func updateSelectedTime(stoppedMoving: Bool) {
-        guard let playerTime = positionBarTime else {
-            return
-        }
         if stoppedMoving {
-            delegate?.positionBarStoppedMoving(playerTime)
+            delegate?.positionBarStoppedMoving()
         } else {
-            delegate?.didChangePositionBar(playerTime)
+            delegate?.didChangePositionBar()
         }
     }
 
