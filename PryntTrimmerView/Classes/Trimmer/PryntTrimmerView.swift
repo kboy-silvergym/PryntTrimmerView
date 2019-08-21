@@ -305,21 +305,21 @@ public protocol TrimmerViewDelegate: class {
     }
     
     /// Move the left handle to the given time.
-    public func setStart(to time: CMTime) {
+    public func setStartPercent(to percent: CGFloat) {
         currentLeftConstraint = leftConstraint!.constant
-        if let newPosition = getPosition(from: time) {
-            updateLeftConstraint(with: newPosition - currentLeftConstraint)
-            layoutIfNeeded()
-        }
+        
+        let newPosition: CGFloat = durationSize * percent
+        updateLeftConstraint(with: newPosition - currentLeftConstraint)
+        layoutIfNeeded()
     }
     
     /// Move the right handle to the given time.
-    public func setEnd(to time: CMTime) {
+    public func setEndPercent(to percent: CGFloat) {
         currentRightConstraint = rightConstraint!.constant
-        if let newPosition = getPosition(from: time) {
-            updateRightConstraint(with: newPosition - currentRightConstraint - durationSize)
-            layoutIfNeeded()
-        }
+        
+        let newPosition: CGFloat = durationSize * percent
+        updateRightConstraint(with: newPosition - currentRightConstraint - durationSize)
+        layoutIfNeeded()
     }
     
     public var startPercent: CGFloat {
