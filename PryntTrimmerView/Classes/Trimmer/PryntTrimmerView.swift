@@ -13,7 +13,7 @@ public protocol TrimmerViewDelegate: class {
     func didChangePositionBar()
     func positionBarStoppedMoving()
     func positionBarBeingDragged()
-    func positionBarStoppedDragging()
+    func positionBarStoppedDragging(percentage: CGFloat)
 }
 
 /// A view to select a specific time range of a video. It consists of an asset preview with thumbnails inside a scroll view, two
@@ -278,7 +278,13 @@ public protocol TrimmerViewDelegate: class {
             layoutIfNeeded()
             delegate?.positionBarBeingDragged()
         case .cancelled, .ended, .failed:
-            delegate?.positionBarStoppedDragging()
+            
+            let maxPosition: CGFloat = rightHandleView.frame.origin.x
+                - (leftHandleView.frame.origin.x + handleWidth)
+                - positionBar.frame.width
+            let percentage: CGFloat = (positionConstraint?.constant ?? 0) / maxPosition
+            
+            delegate?.positionBarStoppedDragging(percentage: percentage)
         default: break
         }
     }
