@@ -108,6 +108,14 @@ class VideoTrimmerViewController: AssetSelectionViewController {
 }
 
 extension VideoTrimmerViewController: TrimmerViewDelegate {
+    func positionBarBeingDragged() {
+        print("positionBarBeingDragged")
+    }
+    
+    func positionBarStoppedDragging() {
+        print("positionBarStoppedDragging")
+    }
+    
     func positionBarStoppedMoving() {
       print("positionBarStoppedMoving")
     }
