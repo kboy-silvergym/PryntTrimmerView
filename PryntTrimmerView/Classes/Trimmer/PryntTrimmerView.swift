@@ -65,6 +65,8 @@ public protocol TrimmerViewDelegate: class {
 
     private var currentLeftConstraint: CGFloat = 0
     private var currentRightConstraint: CGFloat = 0
+    private var currentPositionConstraint: CGFloat = 0
+    
     private var leftConstraint: NSLayoutConstraint?
     private var rightConstraint: NSLayoutConstraint?
     private var positionConstraint: NSLayoutConstraint?
@@ -202,11 +204,14 @@ public protocol TrimmerViewDelegate: class {
     }
 
     private func setupGestures() {
-
-        let leftPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(TrimmerView.handlePanGesture))
+        let leftPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(type(of: self).handlePanGesture))
         leftHandleView.addGestureRecognizer(leftPanGestureRecognizer)
-        let rightPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(TrimmerView.handlePanGesture))
+        
+        let rightPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(type(of: self).handlePanGesture))
         rightHandleView.addGestureRecognizer(rightPanGestureRecognizer)
+        
+        let positionPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(type(of: self).handlePositionBarPanGesture))
+        positionBar.addGestureRecognizer(positionPanGestureRecognizer)
     }
 
     private func updateMainColor() {
@@ -223,7 +228,8 @@ public protocol TrimmerViewDelegate: class {
     // MARK: - Trim Gestures
 
     @objc func handlePanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
-        guard let view = gestureRecognizer.view, let superView = gestureRecognizer.view?.superview else { return }
+        guard let view = gestureRecognizer.view,
+            let superView = gestureRecognizer.view?.superview else { return }
         let isLeftGesture = view == leftHandleView
         switch gestureRecognizer.state {
 
@@ -254,6 +260,26 @@ public protocol TrimmerViewDelegate: class {
         default: break
         }
     }
+    
+    @objc private func handlePositionBarPanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
+        guard let superView = gestureRecognizer.view?.superview else {
+            return
+        }
+        switch gestureRecognizer.state {
+            
+        case .began:
+            currentPositionConstraint = positionConstraint!.constant
+            updateSelectedTime(stoppedMoving: false)
+        case .changed:
+            let translation = gestureRecognizer.translation(in: superView)
+            updatePositionConstraint(with: translation.x)
+            layoutIfNeeded()
+            updateSelectedTime(stoppedMoving: false)
+        case .cancelled, .ended, .failed:
+            updateSelectedTime(stoppedMoving: true)
+        default: break
+        }
+    }
 
     private func updateLeftConstraint(with translation: CGFloat) {
         let maxConstraint = max(rightHandleView.frame.origin.x - handleWidth - minimumDistanceBetweenHandle, 0)
@@ -265,6 +291,10 @@ public protocol TrimmerViewDelegate: class {
         let maxConstraint = min(2 * handleWidth - frame.width + leftHandleView.frame.origin.x + minimumDistanceBetweenHandle, 0)
         let newConstraint = max(min(0, currentRightConstraint + translation), maxConstraint)
         rightConstraint?.constant = newConstraint
+    }
+    
+    private func updatePositionConstraint(with translation: CGFloat) {
+        positionConstraint?.constant = currentPositionConstraint + translation
     }
 
     // MARK: - Asset loading
