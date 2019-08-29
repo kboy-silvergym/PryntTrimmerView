@@ -271,7 +271,6 @@ public protocol TrimmerViewDelegate: class {
             
         case .began:
             currentPositionConstraint = positionConstraint!.constant
-            updateSelectedTime(stoppedMoving: false)
         case .changed:
             let translation = gestureRecognizer.translation(in: superView)
             updatePositionConstraint(with: translation.x)
