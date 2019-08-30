@@ -301,7 +301,10 @@ public protocol TrimmerViewDelegate: class {
     }
     
     private func updatePositionConstraint(with translation: CGFloat) {
-        positionConstraint?.constant = currentPositionConstraint + translation
+        let maxConstraint = max(rightHandleView.frame.origin.x - (leftHandleView.frame.origin.x + handleWidth)
+            - positionBar.frame.width, 0)
+        let newConstraint = min(max(0, currentPositionConstraint + translation), maxConstraint)
+        positionConstraint?.constant = newConstraint
     }
 
     // MARK: - Asset loading
@@ -356,6 +359,14 @@ public protocol TrimmerViewDelegate: class {
         
         let newPosition: CGFloat = durationSize * percent
         updateRightConstraint(with: newPosition - currentRightConstraint - durationSize)
+        layoutIfNeeded()
+    }
+    
+    public func setPositionPercent(to percent: CGFloat) {
+        currentPositionConstraint = positionConstraint!.constant
+        
+        let newPosition: CGFloat = durationSize * percent
+        updatePositionConstraint(with: newPosition - currentPositionConstraint)
         layoutIfNeeded()
     }
     
